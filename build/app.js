@@ -12,8 +12,8 @@ const router_1 = require("./router");
 (0, mongoDB_1.mongoDb)();
 app.use(express_1.default.json());
 app.use('/', router_1.router);
-const PORT = process.env.PORT || 4000;
-// const PORT = 3000
+// const PORT = process.env.PORT || 4000;
+const PORT = 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });

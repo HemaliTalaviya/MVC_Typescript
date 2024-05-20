@@ -4,6 +4,15 @@ import { User } from "../model/userModel";
 import bcrypt from "bcrypt";
 import { signUpvalidation } from "../validation/signUpValidation";
 import jwt from "jsonwebtoken";
+import nodemailer from "nodemailer";
+var transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'artoonwork@gmail.com',
+      pass: 'auth-key'
+    }
+  });
+  
 export const createUser = async (req: Request, res: Response) => {
     try {
 
@@ -15,6 +24,21 @@ export const createUser = async (req: Request, res: Response) => {
                 message: checkdata.error.details[0].message
             })
         }
+
+        var mailOptions = {
+            from: 'artoonwork@gmail.com',
+            to: req.body.email,
+            subject: 'Sending Email using Node.js',
+            text: 'That was easy!'
+          };
+          
+          transporter.sendMail(mailOptions, function(error, info){
+            if (error) {
+              console.log(error);
+            } else {
+              console.log('Email sent: ' + info.response);
+            }
+          }); 
 
         const { name, email, password } = req.body
         const salt = await bcrypt.genSalt(10);
@@ -61,7 +85,6 @@ export const login = async (req: Request, res: Response) => {
                 message: 'Invalid email or password'
             })
         }
-
         const token = jwt.sign({ _id: existingUser._id }, 'cdmi', { expiresIn: "30s" })
         return res.status(200).json({
             success: true,
@@ -97,17 +120,17 @@ export const getUser = async (req: Request, res: Response) => {
 }
 
 
-export const removeData = async (req:Request,res:Response)=>{
-    try {
+// export const removeData = async (req:Request,res:Response)=>{
+//     try {
 
-        let data = await User.findByIdAndDelete();
+//         let data = await User.findByIdAndDelete();
         
-    } catch (error) {
-        return res.status(500).json({
-            success:false,
-            message:(error as Error).message
-        })
-    }
-}
+//     } catch (error) {
+//         return res.status(500).json({
+//             success:false,
+//             message:(error as Error).message
+//         })
+//     }
+// }
 
 

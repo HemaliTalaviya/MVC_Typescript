@@ -19,7 +19,7 @@ const mongoDb = () => __awaiter(void 0, void 0, void 0, function* () {
         mongoose_1.default.connect('mongodb://localhost:27017/ts-login').then(() => {
             console.log('connected...');
         }).catch((err) => {
-            console.log('Db connection error', err);
+            console.log('mongo Db connection error', err);
         });
     }
     catch (error) {
