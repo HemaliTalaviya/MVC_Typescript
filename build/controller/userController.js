@@ -12,11 +12,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.removeData = exports.getUser = exports.login = exports.createUser = void 0;
+exports.getUser = exports.login = exports.createUser = void 0;
 const userModel_1 = require("../model/userModel");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const signUpValidation_1 = require("../validation/signUpValidation");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const nodemailer_1 = __importDefault(require("nodemailer"));
+var transporter = nodemailer_1.default.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'artoonwork@gmail.com',
+        pass: 'auth-key'
+    }
+});
 const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const checkdata = (0, signUpValidation_1.signUpvalidation)(req.body);
@@ -27,6 +35,20 @@ const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
                 message: checkdata.error.details[0].message
             });
         }
+        var mailOptions = {
+            from: 'artoonwork@gmail.com',
+            to: req.body.email,
+            subject: 'Sending Email using Node.js',
+            text: 'That was easy!'
+        };
+        transporter.sendMail(mailOptions, function (error, info) {
+            if (error) {
+                console.log(error);
+            }
+            else {
+                console.log('Email sent: ' + info.response);
+            }
+        });
         const { name, email, password } = req.body;
         const salt = yield bcrypt_1.default.genSalt(10);
         const hashPassword = yield bcrypt_1.default.hash(password, salt);
@@ -107,15 +129,13 @@ const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.getUser = getUser;
-const removeData = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        let data = yield userModel_1.User.findByIdAndDelete();
-    }
-    catch (error) {
-        return res.status(500).json({
-            success: false,
-            message: error.message
-        });
-    }
-});
-exports.removeData = removeData;
+// export const removeData = async (req:Request,res:Response)=>{
+//     try {
+//         let data = await User.findByIdAndDelete();
+//     } catch (error) {
+//         return res.status(500).json({
+//             success:false,
+//             message:(error as Error).message
+//         })
+//     }
+// }
