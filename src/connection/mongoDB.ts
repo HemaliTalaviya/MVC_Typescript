@@ -1,15 +1,18 @@
 import  mongoose  from "mongoose";
+import { logger } from "../logger";
+
 
 export const mongoDb = async() =>{
     try {
 
         mongoose.connect('mongodb://localhost:27017/ts-login').then(()=>{
-        console.log('connected...')
+            logger.info('connected...')
+        // console.log('connected...')
         }).catch((err)=>{
-            console.log('mongo Db connection error',err)
+            logger.info('mongo Db connection error',err)
         })
 
     } catch (error) {
-        console.log('Db connection Error:',error)
+        logger.info('Db connection Error:',error)
     }
 }

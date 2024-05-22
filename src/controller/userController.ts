@@ -5,6 +5,7 @@ import bcrypt from "bcrypt";
 import { signUpvalidation } from "../validation/signUpValidation";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
+import { logger } from "../logger";
 var transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -17,7 +18,7 @@ export const createUser = async (req: Request, res: Response) => {
     try {
 
         const checkdata = signUpvalidation(req.body);
-        // console.log('checkdata',checkdata);
+        // logger.info('checkdata',checkdata);
         if (checkdata.error) {
             return res.status(400).json({
                 success: false,
@@ -36,7 +37,7 @@ export const createUser = async (req: Request, res: Response) => {
             if (error) {
               console.log(error);
             } else {
-              console.log('Email sent: ' + info.response);
+                logger.info('Email sent: ' + info.response);
             }
           }); 
 
@@ -70,7 +71,7 @@ export const login = async (req: Request, res: Response) => {
     const { email, password } = req.body
     try {
         const existingUser = await User.findOne({ email: email });
-        // console.log('existing user', existingUser);
+        // logger.info('existing user', existingUser);
         if (!existingUser) {
             return res.status(400).json({
                 success: false,
